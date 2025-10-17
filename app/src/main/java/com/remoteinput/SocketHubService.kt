@@ -1,4 +1,3 @@
-// header
 package com.remoteinput
 
 import android.app.Service
@@ -116,6 +115,7 @@ class SocketHubService : Service() {
                 notifyState("连接失败")
             }
         }
+        // 出站重复拨号在上面已忽略
     }
 
     fun disconnect() {
@@ -268,6 +268,11 @@ class SocketHubService : Service() {
             }
             else -> Log.w(TAG, "unknown frame: ${frame.take(64)}")
         }
+    }
+
+    private fun notifyState(state: String) {
+        Log.i(TAG, "notifyState -> $state")
+        mainScope.launch { appSink?.onConnectionState(state) }
     }
 
     @Suppress("unused")
